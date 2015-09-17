@@ -11,4 +11,3 @@ class Solution(object):
                 ret += 1
                 x = i
         return ret
-     
