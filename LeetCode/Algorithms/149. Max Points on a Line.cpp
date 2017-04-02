@@ -6,36 +6,21 @@ struct Point {
 };
 class Solution {
 public:
-    int maxPoints(vector<Point>& points) {
-        //特殊情况：1.垂直于x轴的线 2.重复的点
-        unordered_map<double, int> cal;
-        int maxx = 0;
-        for(int i =0;i<points.size();i++){
-            cal.clear();
-            int repeat = 0;
-            int chui = 0;
-            for(int j = 0;j<points.size()&&j!=i;j++){
-                if (points[j].x == points[i].x && points[j].y == points[i].y){
-                    repeat++;
-                    continue;
-                }
-                else if (points[j].x == points[j].x){
-                    chui ++;
-                    continue;
-                }else{
-                    double k = (points[j].y - points[i].y) * 1.0/(points[j].x - points[i].x);
-                    if(cal.count(k) != 0){
-                        cal[k]++;
-                    }else{
-                        cal[k]=1;
-                    }
-                }
-            }
-            for(auto it = cal.begin();it!=cal.end();it++){
-                maxx = max(maxx, it->second+repeat);
-            }
-            maxx = max(maxx, chui+repeat);
+int maxPoints(vector<Point>& points) {
+    unordered_map<double, int> slope;
+    int i = 0, max_p = 0, same_p = 1, same_v = 1;
+    for (i = 0; i < points.size(); same_p = 1, same_v = 1, i++) {
+        for (int j = i+1; j < points.size(); j++) {
+            if (points[i].y == points[j].y) 
+                { if (++same_v && points[i].x == points[j].x && ++same_p); }
+            else 
+                slope[double(points[i].x - points[j].x) / double(points[i].y - points[j].y)]++;
         }
-        return maxx;
+        max_p = max(max_p, same_v);
+        for (auto item : slope) 
+            { max_p = max(max_p, item.second + same_p); }
+        slope.clear();
     }
+    return max_p;
+}
 };
