@@ -13,23 +13,24 @@ public:
         queue<TreeNode*> tq;
         queue<int> lq;
         vector<double> res;
-        int n = 0;
-        tp.push(root); lq.push(0);
+        vector<int> ll;
+        tq.push(root); lq.push(0);
         int pre = -1;
         while(!tq.empty()){
             TreeNode * t = tq.front();
             int level = lq.front();
-            tp.pop();lq.pop();
-            n++;
-            if(pre!=level){
-                res[level] = (res[level] + t->val)/n;
-                pre = level;
-                n = 0;
-            }else{
-                res[level] += t->val;
+            tq.pop();lq.pop();
+            if(res.size()<level+1){
+                res.push_back(0);
+                ll.push_back(0);
             }
+            res[level] = (res[level] + t->val);
+            ll[level]++;
             if(t->left) {tq.push(t->left); lq.push(level+1);}
             if(t->right) {tq.push(t->right); lq.push(level+1);}
+        }
+        for(int i=0;i<res.size();++i){
+            res[i] = res[i] * 1.0/ll[i];
         }
         return res;
     }
