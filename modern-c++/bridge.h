@@ -2,31 +2,33 @@
 // Created by SunStriKE on 2018/5/1.
 //
 
-#ifndef MODERN_C_BRIDGE_H
-#define MODERN_C_BRIDGE_H
+#pragma once
 
+#include "util.h"
+namespace bridge {
+    class Imp {
+    public:
+        Imp() { std::cout << "imp()" << std::endl; }
 
-#include <bits/shared_ptr.h>
-#include <iostream>
+        ~Imp() { std::cout << "~imp()" << std::endl; }
 
-class imp{
-public:
-    imp(){std::cout<<"imp()"<<std::endl;}
-    ~imp(){std::cout<<"~imp()"<<std::endl;}
-    void print(){std::cout<<"imp print"<<std::endl;}
-};
-class sample {
-public:
-    sample():_pimp(new imp){std::cout<<"sample()"<<std::endl;}
-    ~sample(){
-        std::cout<<"~sample()"<<std::endl;
-    }
-    void print(){
-        _pimp->print();
-    }
-private:
-    std::shared_ptr<imp> _pimp;
-};
+        void print() { std::cout << "imp print" << std::endl; }
+    };
 
+    class Sample {
+    public:
+        Sample() : _pimp(new Imp) { std::cout << "sample()" << std::endl; }
 
-#endif //MODERN_C_BRIDGE_H
+        ~Sample() {
+            std::cout << "~sample()" << std::endl;
+        }
+
+        void print() {
+            _pimp->print();
+        }
+
+    private:
+        std::shared_ptr<Imp> _pimp;
+    };
+
+}

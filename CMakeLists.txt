@@ -4,9 +4,10 @@ SET(CMAKE_CXX_COMPILER /usr/bin/gcc)
 project(test)
 
 set(CMAKE_CXX_STANDARD 20)
-
+include_directories("modern-c++/*/*.h modern-c++/*.h")
 add_executable(creator modern-c++/creator.cpp modern-c++/util.h)
 add_executable(builder modern-c++/builder/builder.cpp modern-c++/util.h modern-c++/builder/FluentBuilder.h modern-c++/builder/GroovyStyleBuilder.h modern-c++/builder/CompositeBuilder.h modern-c++/builder/person.cpp)
 add_executable(factory modern-c++/factory/factory_main.cpp modern-c++/factory/InnerFactory.h modern-c++/util.h modern-c++/factory/AbstractFactory.h modern-c++/factory/FuncionalFactory.h)
-add_executable(singleton modern-c++/singleton/singleton_main.cpp modern-c++/util.h modern-c++/Singleton/Forward.h)
+add_executable(singleton modern-c++/singleton/singleton_main.cpp modern-c++/util.h modern-c++/singleton/Forward.h)
 add_executable(adapter modern-c++/adapter/adapter_main.cpp modern-c++/adapter/Adapter.h)
+add_executable(mix modern-c++/mix_main.cpp modern-c++/bridge.h)
