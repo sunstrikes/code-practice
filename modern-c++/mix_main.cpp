@@ -4,6 +4,7 @@
 
 #include "bridge.h"
 #include "composite.h"
+#include "flyweight.h"
 using namespace std;
 using namespace bridge;
 using namespace composite;
@@ -34,6 +35,14 @@ int main() {
     Layer l2{ 2 }, l3{ 3 };
     l2.connect_to(l3);
     cout << "Layer l2" << endl << l2;
-    cout << "Layer l3" << endl << l3;
+    cout << "Layer l3" << endl << l3 << endl << endl;
+
+    cout << "Flyweight Pattern:" << endl;
+    //避免大量的string对象存储, 更改为hash存储
+    flyweight::User a{"a", "A"};
+    flyweight::User b{"b", "B"};
+    cout << a.get_first_name() << endl;
+    cout << b.get_last_name() << endl;
+
     return 0;
 }
