@@ -11,4 +11,4 @@ add_executable(factory modern-c++/factory/factory_main.cpp modern-c++/factory/In
 add_executable(singleton modern-c++/singleton/singleton_main.cpp modern-c++/util.h modern-c++/singleton/Forward.h)
 add_executable(adapter modern-c++/adapter/adapter_main.cpp modern-c++/adapter/Adapter.h)
 add_executable(mix modern-c++/mix_main.cpp modern-c++/bridge.h modern-c++/composite.h)
-add_executable(decorator modern-c++/decorator/dynamic.h modern-c++/decorator/decorator_main.cpp modern-c++/decorator/static_decorator.h)
+add_executable(decorator modern-c++/decorator/dynamic.h modern-c++/decorator/decorator_main.cpp modern-c++/decorator/static_decorator.h modern-c++/decorator/functional_decorator.h)

@@ -1,10 +1,20 @@
 //
-// Created by Sun,Minqi on 2021/6/8.
+// Created by SunStriKE on 2021/6/10.
 //
 #include "dynamic.h"
 #include "static_decorator.h"
+#include "functional_decorator.h"
 using namespace std;
 using namespace decorator;
+template <typename R, typename... Args>
+
+auto make_logger(R (*func)(Args...), const string& name)
+{
+    return Logger<R(Args...)>(
+            std::function<R(Args...)>(func),
+            name);
+}
+
 int main() {
     /*
      * dynamic的缺点:
@@ -22,10 +32,21 @@ int main() {
      * static的优点:
      * 通过模板在编译期将装饰类继承自Circle, 这样通过模板装饰可以完美解决调用内部类方法的问题
      * 另外通过可变参数模板实现构造函数串联
+     * 缺点: 失去了运行期进行重组对象的便利性
      */
     cout << "Static Decorator:" << endl;
     StaticTransShape<StaticColoredShape<Circle>> static_color{25.0, "red", 1.0};
     static_color.resize(3);
-    cout << static_color.str() << endl;
+    cout << static_color.str() << endl << endl;
 
+    /*
+     * functional:
+     * 适用于将代码块或者特定函数进行wrap的操作
+     */
+    cout << "Functional Decorator" << endl;
+    Logger1([](){std::cout << "hello" << std::endl;}, "HelloFunc")();
+    cout << "Template FuncDecorator" << endl;
+    auto call_logger = make_logger(add, "add");
+    auto ret = call_logger(2, 3);
+    cout << "Result: " << ret << endl;
 }
