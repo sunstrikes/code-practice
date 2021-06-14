@@ -4,12 +4,13 @@
 #include "dynamic.h"
 #include "static_decorator.h"
 #include "functional_decorator.h"
+
 using namespace std;
 using namespace decorator;
-template <typename R, typename... Args>
 
-auto make_logger(R (*func)(Args...), const string& name)
-{
+template<typename R, typename... Args>
+
+auto make_logger(R (*func)(Args...), const string &name) {
     return Logger<R(Args...)>(
             std::function<R(Args...)>(func),
             name);
@@ -44,7 +45,7 @@ int main() {
      * 适用于将代码块或者特定函数进行wrap的操作
      */
     cout << "Functional Decorator" << endl;
-    Logger1([](){std::cout << "hello" << std::endl;}, "HelloFunc")();
+    Logger1([]() { std::cout << "hello" << std::endl; }, "HelloFunc")();
     cout << "Template FuncDecorator" << endl;
     auto call_logger = make_logger(add, "add");
     auto ret = call_logger(2, 3);
