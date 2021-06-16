@@ -18,5 +18,14 @@ int main() {
         com.undo();
     }
 
+    cout << endl << "Composite Command Pattern:" << endl;
+    Account from; from.balance = 1000;
+    Account to;
+    MoneyTransferCommand trans_com{from, to, 1500};
+    trans_com.call();
+    cout << "from: " << from.balance << "  to: " << to.balance << endl;
+    trans_com.undo();
+    cout << "from: " << from.balance << "  to: " << to.balance << endl;
+
     return 0;
 }

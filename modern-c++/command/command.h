@@ -14,10 +14,9 @@ namespace command {
      * command模式用来替代数据对象的set/get方法, 保留历史更改
      */
     struct Account {
-    private:
+    public:
         int balance = 0;
         int overdraft_limit = -500;
-    public:
         void deposit(int amount) {
             balance += amount;
             std::cout << "deposit succeed, total:" << balance << std::endl;
@@ -35,6 +34,7 @@ namespace command {
     };
 
     struct Command {
+        bool succeeded = false;
         virtual void call() = 0;
 
         virtual void undo() = 0;
@@ -49,21 +49,25 @@ namespace command {
         enum Action {
             deposit, withdraw
         } _action;
+
         BankCommand(Account &account, Action action, const int amount) : _account(account), _action(action),
                                                                          _amount(amount) {}
 
-        [[nodiscard]] void call() override {
-            switch(_action) {
+        void call() override {
+            switch (_action) {
                 case Action::deposit:
                     _account.deposit(_amount);
+                    Command::succeeded = true;
                     break;
                 case Action::withdraw:
                     _withdraw_succeed = _account.withdraw(_amount);
+                    Command::succeeded = _withdraw_succeed;
                     break;
             }
         }
+
         void undo() override {
-            switch(_action) {
+            switch (_action) {
                 case deposit:
                     _account.withdraw(_amount);
                     break;
@@ -76,4 +80,30 @@ namespace command {
         }
     };
 
+    struct CompositeBankCommand: std::vector<BankCommand>, Command{
+        CompositeBankCommand(const std::initializer_list<value_type>& items): std::vector<BankCommand>(items) {}
+        void call() override {
+            bool flag = true;
+            for (auto& item: *this) {
+                if (flag) {
+                    item.call();
+                    flag = item.succeeded;
+                } else {
+                    item.succeeded = false;
+                }
+            }
+        }
+        void undo() override {
+            for (auto iter = rbegin(); iter != rend(); ++iter) {
+                iter->undo();
+            }
+        }
+    };
+
+    struct MoneyTransferCommand: CompositeBankCommand {
+        MoneyTransferCommand(Account& from, Account& to, int amount): CompositeBankCommand{
+            BankCommand{from, BankCommand::withdraw, amount},
+            BankCommand{to, BankCommand::deposit, amount}
+        } {}
+    };
 }
