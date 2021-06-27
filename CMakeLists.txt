@@ -17,4 +17,4 @@ add_executable(decorator modern-c++/decorator/dynamic.h modern-c++/decorator/dec
 add_executable(proxy modern-c++/proxy/proxy_main.cpp modern-c++/proxy/property.h modern-c++/proxy/virtual.h)
 add_executable(chain modern-c++/chain/chain_main.cpp)
 add_executable(command modern-c++/command/command.h modern-c++/command/command_main.cpp)
-add_executable(mix2 modern-c++/mix2_main.cpp modern-c++/mediator.h)
+add_executable(mix2 modern-c++/mix2_main.cpp modern-c++/mediator.h modern-c++/memento.h)
