@@ -3,7 +3,7 @@
 #include <iostream>
 #include <utility>
 #include "bridge.h"
-#include "Observer.h"
+#include "observer/observer_template.h"
 using namespace std;
 /*
  * 工厂模式： c++11不需要传出指针创建
