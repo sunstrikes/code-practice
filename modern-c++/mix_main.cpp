@@ -67,8 +67,8 @@ int main() {
     cout << endl;
     cout << "Iterator Pattern: " << endl;
     BinaryTree<int> iter_tree{new Node<int>{2, new Node<int>{1}, new Node<int>{3}}};
-    for (auto iter = iter_tree.begin(); iter != iter_tree.end(); ++iter) {
-        cout << "Iterator: " << (*iter).value << endl;
+    for (auto & iter : iter_tree) {
+        cout << "Iterator: " << iter.value << endl;
     }
     return 0;
 }

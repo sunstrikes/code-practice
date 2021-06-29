@@ -8,7 +8,7 @@
 
 namespace observer {
     template<class T>
-    struct Observer {
+    struct Observer : std::enable_shared_from_this<Observer<T>>{
         virtual void field_changed(T &source, const std::string &field_name) = 0;
 
         static int listener_id;
@@ -20,6 +20,9 @@ namespace observer {
     };
 
     template<class T>
+    int Observer<T>::listener_id = 0;
+
+    template<class T>
     struct Observable {
         void subscribe(const std::shared_ptr<Observer<T>> &listener) {
             std::lock_guard<std::mutex> guard(_mtx);
@@ -28,15 +31,17 @@ namespace observer {
 
         void unsubscribe(const std::shared_ptr<Observer<T>> &listener) {
             std::lock_guard<std::mutex> guard(_mtx);
-            std::erase(std::remove_if(_listeners.begin(), _listeners.end(),
-                                      [&listener](const std::weak_ptr<Observer<T>> &ptr) {
-                                          auto sp = ptr.lock();
-                                          if (sp) {
-                                              return sp->get_id() == listener->get_id();
-                                          } else {
-                                              return true;
-                                          }
-                                      }), _listeners.end());
+            auto listener_id = listener->get_id();
+            auto sd = std::remove_if(_listeners.begin(), _listeners.end(),
+                           [listener_id](std::weak_ptr<Observer<T>> &ptr) {
+                               auto sp = ptr.lock();
+                               if (sp) {
+                                   return sp->get_id() == listener_id;
+                               } else {
+                                   return true;
+                               }
+                           });
+            _listeners.erase(sd, _listeners.end());
         }
 
         void notify(T &source, const std::string &name) {
@@ -45,7 +50,7 @@ namespace observer {
             std::vector<std::weak_ptr<Observer<T>>> copy_listeners;
             {
                 std::lock_guard<std::mutex> guard(_mtx);
-                std::erase(std::remove_if(_listeners.begin(), _listeners.end(),
+                _listeners.erase(std::remove_if(_listeners.begin(), _listeners.end(),
                                           [&copy_listeners](const std::weak_ptr<Observer<T>> &ptr) {
                                               std::shared_ptr<Observer<T>> sp = ptr.lock();
                                               if (sp) {
@@ -75,7 +80,14 @@ namespace observer {
     public:
         [[nodiscard]] int get_age() const { return _age; }
 
-        void set_age(int age) { _age = age; }
+        void set_age(int age) {
+            if (_age == age) return;
+            _age = age;
+            Observable<Person>::notify(*this, "age");
+            if (is_adult()) {
+                Observable<Person>::notify(*this, "is_adult");
+            }
+        }
 
         Person() {
             _age = 0;
@@ -95,17 +107,18 @@ namespace observer {
         }
 
         void field_changed(Person &source, const std::string &field_name) override {
-            std::cout << "field[" << field_name << "] watched, value changed to:" << source.get_age() << std::endl;
+            std::cout << "[PersonListener]: field[" << field_name << "] watched, value changed to:" << source.get_age() << std::endl;
         }
     };
 
-    struct AdultListener : Observer<Person>, std::enable_shared_from_this<AdultListener> {
+    struct AdultListener : Observer<Person> {
         AdultListener() {
             Observer<Person>::_unique_id = Observer<Person>::listener_id++;
             std::cout << "added AdultListener id=" << _unique_id << std::endl;
         }
 
         void field_changed(Person &source, const std::string &field_name) override {
+            std::cout << "[AdultListener]: field[" << field_name << "] watched, value changed to:" << source.get_age() << std::endl;
             if (field_name == "age") {
                 if (source.is_adult()) {
                     source.unsubscribe(shared_from_this());

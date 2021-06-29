@@ -18,5 +18,5 @@ add_executable(proxy modern-c++/proxy/proxy_main.cpp modern-c++/proxy/property.h
 add_executable(chain modern-c++/chain/chain_main.cpp)
 add_executable(command modern-c++/command/command.h modern-c++/command/command_main.cpp)
 add_executable(mix2 modern-c++/mix2_main.cpp modern-c++/mediator.h modern-c++/memento.h)
-file(GLOB OBSERVER_FILE modern-c++/observer/*.cpp )
+file(GLOB OBSERVER_FILE modern-c++/observer/observer_main.cpp)
 add_executable(observer ${OBSERVER_FILE} modern-c++/observer/observer_template.h)
