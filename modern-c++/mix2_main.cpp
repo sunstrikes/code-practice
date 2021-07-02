@@ -6,10 +6,12 @@
 #include "mediator.h"
 #include "memento.h"
 #include "state.h"
+#include "strategy.h"
 using namespace std;
 using namespace mediator;
 using namespace memento;
 using namespace state;
+using namespace strategy;
 int main() {
     /*
      * 中介者模式:
@@ -81,7 +83,12 @@ int main() {
     // try process_event here :)
     phone.process_event(CallDialed{});
 
-    cout << "We are done using the phone" << "\n";
+    cout << "We are done using the phone" << "\n\n";
 
+    cout << "Dynamic Strategy Pattern:" << endl;
+    TextProcessor text_processor;
+    text_processor.set_format(OutputFormat::HTML);
+    text_processor.append_list({"foo", "bar"});
+    cout << text_processor.str() << endl;
     return 0;
 }
