@@ -20,3 +20,4 @@ add_executable(command modern-c++/command/command.h modern-c++/command/command_m
 add_executable(mix2 modern-c++/mix2_main.cpp modern-c++/mediator.h modern-c++/memento.h modern-c++/strategy.h)
 file(GLOB OBSERVER_FILE modern-c++/observer/observer_main.cpp)
 add_executable(observer ${OBSERVER_FILE} modern-c++/observer/observer_template.h)
+add_executable(visitor modern-c++/visitor/visitor_main.cpp modern-c++/visitor/classic_visitor.cpp)
